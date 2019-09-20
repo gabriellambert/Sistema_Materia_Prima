@@ -1,0 +1,87 @@
+/* Sistema de cadastro, realizacao de pedidos, registro de entrada e exibicao de
+ *  informacoes de materia-prima. Desenvolvido em C
+ */
+
+/* 
+ * File:   main.c
+ * Author: gabrielmussolin
+ *
+ * Created on September 19, 2019, 7:34 PM
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*
+ * 
+ */
+
+
+int main(int argc, char** argv) {
+
+    int opcao, codigo, estoque, estoque_minimo, numero_pedido, quantidade_pedido, novo_codigo, reposicao;
+    int qtde_pedidos, qtde_entradas;
+    float preco;
+    
+    qtde_pedidos = 0;
+    qtde_entradas = 0;
+    
+    while (opcao != 8) {
+
+        printf("           MENU DE OPCOES\n"
+                "------------------------------------\n"
+                "01 - CADASTRAR MATERIA-PRIMA\n"
+                "02 - FAZER PEDIDOS\n"
+                "03 - ENTRADA DE MATERIA-PRIMA\n"
+                "04 - INFORMACOES DE MATERIA-PRIMA\n"
+                "08 - Sair do programa\n"
+                "--------------------------------------\n"
+                "DIGITE A OPCAO DESEJADA: ");
+        scanf("%d", &opcao);
+
+        
+        switch(opcao){
+            case 1:
+                //cadastrar materia-prima
+                printf("--- ENTRADA DE MATERIA-PRIMA ---\n");
+                cadastrar_materia(codigo, preco, estoque, estoque_minimo);
+                break;
+
+            case 2:
+                //fazer pedidos
+                fazer_pedido(numero_pedido, quantidade_pedido, estoque, estoque_minimo, qtde_pedidos);
+                break;
+
+            case 3:
+                //entrada de materia-prima
+                entrada_materia(novo_codigo, codigo, reposicao, estoque, qtde_entradas);
+                break;
+
+            case 4:
+                //informacoes da materia-prima
+                informacoes_materia(codigo, preco, estoque, estoque_minimo, qtde_pedidos, qtde_entradas);
+                break;
+
+            case 5:
+                //estatisticas de pedido
+                estatisticas_pedidos(qtde_pedidos, preco, estoque, estoque_minimo, qtde_pedidos, qtde_entradas);
+                break;
+
+            case 6:
+                //estatisticas de entrada
+                estatisticas_entradas(qtde_entradas, preco, estoque, estoque_minimo);
+                break;
+                
+            case 8:
+                printf("Obrigado por utilizar o sistema.");
+                break;
+                
+            default:
+                printf("Digite uma opção válida!");
+                break;
+        }
+    
+    }
+    
+    return (EXIT_SUCCESS);
+}
