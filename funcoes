@@ -1,0 +1,100 @@
+/* Funcoes de cadastro, realizacao de pedidos, registro de entrada e exibicao de
+ *  informacoes de materia-prima. Desenvolvido em C
+ */
+
+float cadastrar_materia(int codigo, float preco, int estoque, int estoque_minimo) {
+    
+    printf("Informe o código do produto: ");
+    scanf("%d", &codigo);
+  
+    printf("Informe o preço unitário: R$");
+    scanf("%f", &preco);
+            
+    printf("Informe a quantidade de entrada do produto: ");
+    scanf("%d", &estoque);
+            
+    printf("Informe a quantidade do estoque mínimo: ");
+    scanf("%d", &estoque_minimo);
+    
+    printf("Matéria-prima cadastrada com sucesso!");
+    
+}
+
+
+int fazer_pedido(int numero_pedido, int quantidade_pedido, int estoque, int estoque_minimo, int qtde_pedidos) {
+    
+    printf("--- PEDIDOS ---\n");
+    printf("Informe o número do pedido: ");
+    scanf("%d", &numero_pedido);
+            
+    printf("Informe a quantidade pedida: ");
+    scanf("%d", &quantidade_pedido);
+            
+    if (quantidade_pedido <= estoque){
+        printf("Pedido realizado!");
+        estoque = estoque - quantidade_pedido;
+        if (estoque <= estoque_minimo && estoque >= 0){
+            printf("Pedido realizado, atenção o estoque precisa de reposição");
+        }
+    } else {
+        printf("Quantidade do pedido excede a quantidade em estoque");
+    }
+            
+    qtde_pedidos += 1;
+            
+}
+
+
+int entrada_materia(int novo_codigo, int codigo, int reposicao, int estoque, int qtde_entradas) {
+    printf("--- ENTRADA DE MATERIA-PRIMA ---");
+    printf("Digite o codigo do produto: ");
+    scanf("%d", &novo_codigo);
+            
+    if (codigo == novo_codigo){
+        printf("Informe a quantidade de reposição da matéria-prima: ");
+        scanf("%d", &reposicao);
+                
+    estoque += reposicao;
+                
+    qtde_entradas += 1;
+    }
+}
+
+
+int informacoes_materia(int codigo, float preco, int estoque, int estoque_minimo, int qtde_pedidos, int qtde_entradas) {
+    
+    printf("--- INFORMACOES DE MATERIA-PRIMA ---");
+    printf("Código: %d", codigo);
+    printf("Preço: %.2f", preco);
+    printf("Estoque: %d", estoque);
+    printf("Estoque mínimo: %d", estoque_minimo);
+    printf("Quantidade de pedidos: %d", qtde_pedidos);
+    printf("Quantidade de entradas: %d", qtde_entradas);
+            
+}
+
+
+int estatisticas_pedidos(int qtde_pedidos, float preco, int estoque, int estoque_minimo, int qtde_entradas){
+    
+    printf("--- ESTATISTICAS DE PEDIDOS ---");
+    printf("Quantidade de pedidos: %d", qtde_pedidos);
+    printf("Preço total dos pedidos: %.2f", preco);
+    printf("Número e quantidade do maior pedido: %d", estoque);
+    printf("Média das quantidades dos pedidos: %d", estoque_minimo);
+    printf("Quantidade de pedidos realizados enquanto a materia-prima"
+            "estava abaixo do estoque mínimo: %d", qtde_pedidos);
+    printf("Quantidade de pedidos recusados: %d", qtde_entradas);
+            
+}
+
+
+int estatisticas_entradas(int qtde_entradas, float preco, int estoque, int estoque_minimo) {
+    
+    printf("--- ESTATISTICAS DE ENTRADAS ---");
+    printf("Quantidade de entradas: %d", qtde_entradas);
+    printf("Preço total de entrada: %.2f", preco);
+    printf("Número e quantidade da menor entrada: %d", estoque);
+    printf("Média das quantidades das entradas: %d", estoque_minimo);
+    printf("Quantidade de entradas recusadas: %d", qtde_entradas);
+            
+}
