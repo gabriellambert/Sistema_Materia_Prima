@@ -32,7 +32,7 @@ int main() {
             break;
 
         case 5: //Exibir informacoes
-            exibe_produtos(Produtos, quantidade_produtos);
+            exibe_produtos(pedidos, Produtos, quantidade_entradas, quantidade_produtos);
             break;
 
         case 6: //Informacoes de realizacao de pedidos

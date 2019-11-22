@@ -13,6 +13,8 @@ typedef struct produtos
     float preco;
     int estoque;
     int estoqueMinimo;
+    int pedidos_total;
+    int entradas_total;
 } tp_produto;
 
 typedef struct pedidos
@@ -40,8 +42,7 @@ void infos();
 int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
 int cadastrar(tp_produto produtos[], int tamanho);
 int procura_produto(tp_produto produtos[], int tamanho, int codigo);
-void exibe_produtos(tp_produto produtos[], int tamanho);
 int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
-
+void exibe_produtos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
 
 

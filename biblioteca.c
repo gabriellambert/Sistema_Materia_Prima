@@ -84,6 +84,7 @@ int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, i
                 } else {
                     produtos[i].estoque = produtos[i].estoque - pedidos[espaco].qtde_pedida;
                     pedidos[espaco].soma_pedido++;
+                    produtos[i].pedidos_total++;
                     printf("Pedido realizado");
                 }
             } else {
@@ -128,6 +129,7 @@ int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int ta
                     produtos[i].estoque = produtos[i].estoque + pedidos[espaco].qtde_entrada;
                     printf("Entrada realizada");
                     pedidos[i].soma_entrada++;
+                    produtos[i].entradas_total++;
                 }
 
             } else {
@@ -163,12 +165,13 @@ int menu() {
 
     return opcao;
 }
-void exibe_produtos(tp_produto produtos[], int tamanho) {
+void exibe_produtos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho) {
     int i;
     printf("\n-- INFORMACOES DO PRODUTO --");
-    printf("\nCodigo \t Nome \t Preco \t Estoque \t Estoque Minimo");
+    printf("\nCodigo \t Nome \t\t Preco \t Estoque \t Estoque Minimo \t Quantidade Pedidos \t Quantidade Entradas");
     for (i=0; i<tamanho; i++) {
-        printf("\n %d\t %s\t %.2f\t %d\t\t %d", produtos[i].codigo, produtos[i].nome, produtos[i].preco, produtos[i].estoque, produtos[i].estoqueMinimo);
+        printf("\n %d\t %s\t\t R$%.2f\t %d\t\t %d \t\t\t %d \t\t\t %d", produtos[i].codigo, produtos[i].nome, produtos[i].preco,
+               produtos[i].estoque, produtos[i].estoqueMinimo, produtos[i].pedidos_total, produtos[i].entradas_total);
     }
     return;
 }
