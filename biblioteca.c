@@ -17,28 +17,33 @@ int cadastrar(tp_produto produtos[], int tamanho) {
     //char produtos[tamanho].nome[TAM_NOME_PRODUTO] = " ";
     int codigo;
     printf("\n-- CADASTRO DE PRODUTOS --");
-    printf("\nEntre com o codigo: ");
-    scanf("%d", &codigo);
-    getchar();
-    if (procura_produto(produtos, tamanho, codigo)==NAO_EXISTE){
-        produtos[tamanho].codigo = codigo;
-        printf("Entre com o nome do produto: ");
-        scanf("%50[^\n]s", produtos[tamanho].nome);
+    if (tamanho <= QTD_MAX_PRODUTOS) {
+
+        printf("\nEntre com o codigo: ");
+        scanf("%d", &codigo);
         getchar();
-//        printf("\n--> %s...", produtos[tamanho].nome);
-//        getchar();
-        printf("Entre com o preco do produto: ");
-        scanf("%f", &produtos[tamanho].preco);
-        getchar();
-        printf("Entre com a quantidade inicial do produto: ");
-        scanf("%d", &produtos[tamanho].estoque);
-        getchar();
-        printf("Entre com o estoque minimo do produto: ");
-        scanf("%d", &produtos[tamanho].estoqueMinimo);
-        getchar();
-        tamanho = tamanho+1;
+        if (procura_produto(produtos, tamanho, codigo)==NAO_EXISTE){
+            produtos[tamanho].codigo = codigo;
+            printf("Entre com o nome do produto: ");
+            scanf("%50[^\n]s", produtos[tamanho].nome);
+            getchar();
+    //        printf("\n--> %s...", produtos[tamanho].nome);
+    //        getchar();
+            printf("Entre com o preco do produto: ");
+            scanf("%f", &produtos[tamanho].preco);
+            getchar();
+            printf("Entre com a quantidade inicial do produto: ");
+            scanf("%d", &produtos[tamanho].estoque);
+            getchar();
+            printf("Entre com o estoque minimo do produto: ");
+            scanf("%d", &produtos[tamanho].estoqueMinimo);
+            getchar();
+            tamanho = tamanho+1;
+        } else {
+            printf("\nProduto com codigo %d ja existente", codigo);
+        }
     } else {
-        printf("\nProduto com codigo %d ja existente", codigo);
+        printf("Você já cadastrou a quantidade maxima, de 5 produtos permitida!");
     }
 
     return tamanho;
@@ -150,7 +155,7 @@ void infos_pedidos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco,
     printf("\n-- INFORMACOES ESTATISTICAS DE PEDIDOS --");
     printf("\nQtde Pedidos \t Preco Total Pedidos \t no / qtde maior pedido \t média das quantidades dos pedidos \t Qtde pedidos abaixo do estoque minimo \t Pedidos Recusados");
     for (i=0; i<tamanho; i++) {
-        printf("\n %d\t %s\t %.2f\t %d\t\t %d", pedidos[i].soma_pedido, (float)produtos[i].preco*pedidos[i].soma_pedido, pedidos[i].preco, produtos[i].estoque, produtos[i].estoqueMinimo);
+        printf("\n %d\t %s\t %.2f\t %d\t\t %d", pedidos[i].soma_pedido, (float)produtos[i].preco*pedidos[i].soma_pedido, produtos[i].estoque, produtos[i].estoqueMinimo);
     }
     return;
 }
