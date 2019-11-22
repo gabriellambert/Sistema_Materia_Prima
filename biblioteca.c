@@ -55,32 +55,37 @@ int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, i
     int codigo;
     int qtdePedida = 0;
     printf("\n-- REALIZAR PEDIDO --");
-    printf("\nEntre com o codigo do produto: ");
-    scanf("%d", &codigo);
-    getchar();
-    printf("\nEntre com numero do pedido: ");
-    scanf("%d", &pedidos[espaco].codigo_pedido);
-    getchar();
-    printf("\nEntre com a quantidade do pedido: ");
-    scanf("%d", &pedidos[espaco].qtde_pedida);
-    getchar();
 
-    if ((i = procura_produto(produtos, tamanho, codigo))!= NAO_EXISTE) {
+    if (tamanho > 0) {
+        printf("\nEntre com o codigo do produto: ");
+        scanf("%d", &codigo);
+        getchar();
+        printf("\nEntre com numero do pedido: ");
+        scanf("%d", &pedidos[espaco].codigo_pedido);
+        getchar();
+        printf("\nEntre com a quantidade do pedido: ");
+        scanf("%d", &pedidos[espaco].qtde_pedida);
+        getchar();
 
-        if (pedidos[espaco].qtde_pedida > pedidos[i].maior_pedido) {
-            pedidos[i].maior_pedido = pedidos[espaco].qtde_pedida;
-            pedidos[i].numero_maior = pedidos[espaco].numero_pedido;
+        if ((i = procura_produto(produtos, tamanho, codigo))!= NAO_EXISTE) {
+
+            if (pedidos[espaco].qtde_pedida > pedidos[i].maior_pedido) {
+                pedidos[i].maior_pedido = pedidos[espaco].qtde_pedida;
+                pedidos[i].numero_maior = pedidos[espaco].numero_pedido;
+            }
+            if (pedidos[espaco].qtde_pedida > produtos[i].estoque) {
+                printf("\nEstoque insuficiente");
+                pedidos[i].pedido_recusado++;
+            }
+            produtos[i].estoque = produtos[i].estoque - pedidos[espaco].qtde_pedida;
+            pedidos[espaco].soma_pedido++;
+            printf("Pedido realizado");
+
+        } else {
+            printf("\nProduto nao cadastrado, codigo: %d", codigo);
         }
-        if (pedidos[espaco].qtde_pedida > produtos[i].estoque) {
-            printf("\nEstoque insuficiente");
-            pedidos[i].pedido_recusado++;
-        }
-        produtos[i].estoque = produtos[i].estoque - pedidos[espaco].qtde_pedida;
-        pedidos[espaco].soma_pedido++;
-        printf("Pedido realizado");
-
     } else {
-        printf("\nProduto nao cadastrado, codigo: %d", codigo);
+        printf("\nNao e possivel realizar pedido. Nao ha produtos cadastrados no sistema.");
     }
 
     return qtdePedida;
