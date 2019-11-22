@@ -60,27 +60,31 @@ int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, i
         printf("\nEntre com o codigo do produto: ");
         scanf("%d", &codigo);
         getchar();
-        printf("\nEntre com numero do pedido: ");
-        scanf("%d", &pedidos[espaco].codigo_pedido);
-        getchar();
-        printf("\nEntre com a quantidade do pedido: ");
-        scanf("%d", &pedidos[espaco].qtde_pedida);
-        getchar();
-
         if ((i = procura_produto(produtos, tamanho, codigo))!= NAO_EXISTE) {
+
+            if (produtos[i].estoque <= produtos[i].estoqueMinimo) {
+                printf("\nAtencao! O estoque atual esta abaixo do estoque minimo.");
+            }
+
+            printf("\nEntre com numero do pedido: ");
+            scanf("%d", &pedidos[espaco].codigo_pedido);
+            getchar();
+            printf("\nEntre com a quantidade do pedido: ");
+            scanf("%d", &pedidos[espaco].qtde_pedida);
+            getchar();
 
             if (pedidos[espaco].qtde_pedida > pedidos[i].maior_pedido) {
                 pedidos[i].maior_pedido = pedidos[espaco].qtde_pedida;
                 pedidos[i].numero_maior = pedidos[espaco].numero_pedido;
             }
             if (pedidos[espaco].qtde_pedida > produtos[i].estoque) {
-                printf("\nEstoque insuficiente");
+                printf("\nEstoque insuficiente. Nao e possivel realizar o pedido");
                 pedidos[i].pedido_recusado++;
+            } else {
+                produtos[i].estoque = produtos[i].estoque - pedidos[espaco].qtde_pedida;
+                pedidos[espaco].soma_pedido++;
+                printf("Pedido realizado");
             }
-            produtos[i].estoque = produtos[i].estoque - pedidos[espaco].qtde_pedida;
-            pedidos[espaco].soma_pedido++;
-            printf("Pedido realizado");
-
         } else {
             printf("\nProduto nao cadastrado, codigo: %d", codigo);
         }
