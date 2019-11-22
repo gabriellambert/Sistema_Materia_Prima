@@ -178,17 +178,20 @@ void exibe_produtos(tp_produto produtos[], int tamanho) {
 
 void infos_pedidos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho) {
     int i;
-    printf("\n-- INFORMACOES ESTATISTICAS DE PEDIDOS --");
-    printf("\nQtde Pedidos |\t Preco Total Pedidos |\t Maior Pedido |\tMedia Pedidos |\t Abaixo do Est. Minimo");
+    printf("\n\t\t\t\t\t-- INFORMACOES ESTATISTICAS DE PEDIDOS --");
+    printf("\n\t\t\t\t\t=========================================");
     for (i=0; i<tamanho; i++) {
         pedidos[i].media_pedidos = (float)pedidos[i].soma_pedido/(float)produtos[i].pedidos_total;
-        printf("\n %d\t\t %.2f\t\t %d - %d\t %.1f\t\t %d",
+        printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos[i].nome);
+        printf("\nQtde Pedidos |\t Preco Total Pedidos |\t Maior Pedido |\tMedia Pedidos |\t Abaixo do Est. Minimo |\t Pedidos Recusados");
+        printf("\n %d\t\t %.2f\t\t\t %d - %d\t\t %.1f\t\t %d\t\t\t\t %d",
                produtos[i].pedidos_total,
                (float)produtos[i].preco*pedidos[i].soma_pedido,
                pedidos[i].numero_maior,
                pedidos[i].maior_pedido,
                (float)pedidos[i].media_pedidos,
-               pedidos[i].contador_est_min);
+               pedidos[i].contador_est_min,
+               pedidos[i].pedido_recusado);
     }
     return;
 }
