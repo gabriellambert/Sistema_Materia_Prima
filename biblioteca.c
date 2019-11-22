@@ -110,7 +110,7 @@ int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int ta
 
     if (tamanho > 0) {
         if (produtos[i].entradas_total < QTD_MAX_ENTRADAS) {
-            printf("\n-- REALIZAR PEDIDO --");
+            printf("\n-- REALIZAR ENTRADA --");
             printf("\nEntre com o codigo do produto: ");
             scanf("%d", &codigo);
             getchar();
@@ -124,16 +124,18 @@ int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int ta
                     scanf("%d", &pedidos[espaco].qtde_entrada);
                     getchar();
 
-                    if (tamanho == 1) {
+                    if (produtos[i].entradas_total == 0) {
                         pedidos[i].menor_entrada = pedidos[espaco].qtde_entrada;
+                        printf("Tamanho = 1");
                     }
                     if (pedidos[espaco].qtde_entrada < pedidos[i].menor_entrada) {
                         pedidos[i].menor_entrada = pedidos[espaco].qtde_entrada;
                     }
                     produtos[i].estoque = produtos[i].estoque + pedidos[espaco].qtde_entrada;
-                    printf("Entrada realizada");
-                    pedidos[i].soma_entrada+=pedidos[espaco].qtde_pedida;
+                    pedidos[i].valor_total_entradas += (float)pedidos[espaco].qtde_entrada * produtos[i].preco;
+                    pedidos[i].soma_entrada+=pedidos[espaco].qtde_entrada;
                     produtos[i].entradas_total++;
+                    printf("Entrada realizada");
                 }
 
             } else {
@@ -200,18 +202,17 @@ void infos_pedidos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco,
     return;
 }
 
-void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int tamanho) {
+void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho) {
     int i;
     printf("\n\t\t\t\t\t-- INFORMACOES ESTATISTICAS DE ENTRADAS --");
     printf("\n\t\t\t\t\t=========================================");
     for (i=0; i<tamanho; i++) {
         pedidos[i].media_entradas = (float)pedidos[i].soma_entrada/(float)produtos[i].entradas_total;
         printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos[i].nome);
-        printf("\nQtde Entradas |\t Preco Total Entradas |\t Menor Entrada |\tMedia Entradas |\t Entradas Recusadas");
-        printf("\n %d\t\t %.2f\t\t\t %d - %d\t\t %.1f\t\t %d",
+        printf("\nQtde Entradas |\t Preco Total Entradas |\t Menor Entrada | Media Entradas | Entradas Recusadas");
+        printf("\n %d\t\t %.2f\t\t\t %d\t\t %.1f\t\t\t %d",
                produtos[i].entradas_total,
-               (float)produtos[i].preco*pedidos[i].soma_entrada,
-               pedidos[i].numero_maior,
+               pedidos[i].valor_total_entradas,
                pedidos[i].menor_entrada,
                (float)pedidos[i].media_entradas,
                pedidos[i].entrada_recusada);

@@ -36,6 +36,7 @@ typedef struct pedidos
     int contador_est_min;
     int pedido_recusado;
     int entrada_recusada;
+    float valor_total_entradas;
 } tp_movimentacao;
 
 int menu();
@@ -46,4 +47,4 @@ int procura_produto(tp_produto produtos[], int tamanho, int codigo);
 int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
 void exibe_produtos(tp_produto produtos[], int tamanho);
 void infos_pedidos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
-void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int tamanho);
+void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
