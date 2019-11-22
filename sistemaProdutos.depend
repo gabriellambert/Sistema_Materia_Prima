@@ -1,0 +1,26 @@
+# depslib dependency file v1.0
+1573137537 source:c:\users\user\documents\sistemaprodutos\biblioteca.c
+
+1573138084 source:c:\users\user\documents\sistemaprodutos\main.c
+	<stdio.h>
+	<stdlib.h>
+	"biblioteca.h"
+
+1573137641 c:\users\user\documents\sistemaprodutos\biblioteca.h
+	<stdio.h>
+	<stdlib.h>
+
+1574381979 source:c:\users\user\documents\puc\aed01\sistemaprodutos(v02)\main.c
+	<stdio.h>
+	<stdlib.h>
+	"biblioteca.h"
+
+1574381951 c:\users\user\documents\puc\aed01\sistemaprodutos(v02)\biblioteca.h
+	<stdio.h>
+	<stdlib.h>
+
+1574382165 source:c:\users\user\documents\puc\aed01\sistemaprodutos(v02)\biblioteca.c
+	<stdio.h>
+	<stdlib.h>
+	"biblioteca.h"
+
