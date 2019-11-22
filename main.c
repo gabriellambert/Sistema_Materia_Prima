@@ -40,7 +40,7 @@ int main() {
             break;
 
         case 7: //Informacoes de realizacao de entradas
-
+            infos_entradas(pedidos, Produtos, quantidade_produtos);
             break;
 
         case 8: //Relatorio nao definido

@@ -86,6 +86,7 @@ int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, i
                     produtos[i].estoque = produtos[i].estoque - pedidos[espaco].qtde_pedida;
                     pedidos[espaco].soma_pedido+= pedidos[espaco].qtde_pedida;
                     produtos[i].pedidos_total++;
+                    pedidos[i].preco_total+= (float)pedidos[espaco].qtde_pedida * produtos[i].preco;
                     printf("Pedido realizado");
                 }
             } else {
@@ -108,7 +109,7 @@ int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int ta
     int qtdePedida = 0;
 
     if (tamanho > 0) {
-        if (pedidos[espaco].soma_entrada < QTD_MAX_ENTRADAS) {
+        if (produtos[i].entradas_total < QTD_MAX_ENTRADAS) {
             printf("\n-- REALIZAR PEDIDO --");
             printf("\nEntre com o codigo do produto: ");
             scanf("%d", &codigo);
@@ -123,12 +124,15 @@ int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int ta
                     scanf("%d", &pedidos[espaco].qtde_entrada);
                     getchar();
 
-                    if (pedidos[espaco].qtde_entrada > pedidos[i].maior_entrada) {
-                        pedidos[i].maior_entrada = pedidos[espaco].qtde_entrada;
+                    if (tamanho == 1) {
+                        pedidos[i].menor_entrada = pedidos[espaco].qtde_entrada;
+                    }
+                    if (pedidos[espaco].qtde_entrada < pedidos[i].menor_entrada) {
+                        pedidos[i].menor_entrada = pedidos[espaco].qtde_entrada;
                     }
                     produtos[i].estoque = produtos[i].estoque + pedidos[espaco].qtde_entrada;
                     printf("Entrada realizada");
-                    pedidos[i].soma_entrada++;
+                    pedidos[i].soma_entrada+=pedidos[espaco].qtde_pedida;
                     produtos[i].entradas_total++;
                 }
 
@@ -181,17 +185,36 @@ void infos_pedidos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco,
     printf("\n\t\t\t\t\t-- INFORMACOES ESTATISTICAS DE PEDIDOS --");
     printf("\n\t\t\t\t\t=========================================");
     for (i=0; i<tamanho; i++) {
-        pedidos[i].media_pedidos = (float)pedidos[i].soma_pedido/(float)produtos[i].pedidos_total;
+        pedidos[i].media_pedidos = (float)pedidos[espaco].soma_pedido/(float)produtos[i].pedidos_total;
         printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos[i].nome);
         printf("\nQtde Pedidos |\t Preco Total Pedidos |\t Maior Pedido |\tMedia Pedidos |\t Abaixo do Est. Minimo |\t Pedidos Recusados");
         printf("\n %d\t\t %.2f\t\t\t %d - %d\t\t %.1f\t\t %d\t\t\t\t %d",
                produtos[i].pedidos_total,
-               (float)produtos[i].preco*pedidos[i].soma_pedido,
+               pedidos[i].preco_total,
                pedidos[i].numero_maior,
                pedidos[i].maior_pedido,
-               (float)pedidos[i].media_pedidos,
+               (float)pedidos[i].soma_pedido/(float)produtos[i].pedidos_total,
                pedidos[i].contador_est_min,
                pedidos[i].pedido_recusado);
+    }
+    return;
+}
+
+void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int tamanho) {
+    int i;
+    printf("\n\t\t\t\t\t-- INFORMACOES ESTATISTICAS DE ENTRADAS --");
+    printf("\n\t\t\t\t\t=========================================");
+    for (i=0; i<tamanho; i++) {
+        pedidos[i].media_entradas = (float)pedidos[i].soma_entrada/(float)produtos[i].entradas_total;
+        printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos[i].nome);
+        printf("\nQtde Entradas |\t Preco Total Entradas |\t Menor Entrada |\tMedia Entradas |\t Entradas Recusadas");
+        printf("\n %d\t\t %.2f\t\t\t %d - %d\t\t %.1f\t\t %d",
+               produtos[i].entradas_total,
+               (float)produtos[i].preco*pedidos[i].soma_entrada,
+               pedidos[i].numero_maior,
+               pedidos[i].menor_entrada,
+               (float)pedidos[i].media_entradas,
+               pedidos[i].entrada_recusada);
     }
     return;
 }
