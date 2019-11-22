@@ -57,7 +57,7 @@ int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, i
     printf("\n-- REALIZAR PEDIDO --");
 
     if (tamanho > 0) {
-        if (pedidos[espaco].soma_pedido < QTD_MAX_PEDIDOS) {
+        if (produtos[i].pedidos_total < QTD_MAX_PEDIDOS) {
             printf("\nEntre com o codigo do produto: ");
             scanf("%d", &codigo);
             getchar();
@@ -65,6 +65,7 @@ int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, i
 
                 if (produtos[i].estoque <= produtos[i].estoqueMinimo) {
                     printf("\nAtencao! O estoque atual esta abaixo do estoque minimo.");
+                    pedidos[i].contador_est_min++;
                 }
 
                 printf("\nEntre com numero do pedido: ");
@@ -76,14 +77,14 @@ int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, i
 
                 if (pedidos[espaco].qtde_pedida > pedidos[i].maior_pedido) {
                     pedidos[i].maior_pedido = pedidos[espaco].qtde_pedida;
-                    pedidos[i].numero_maior = pedidos[espaco].numero_pedido;
+                    pedidos[i].numero_maior = pedidos[espaco].codigo_pedido;
                 }
                 if (pedidos[espaco].qtde_pedida > produtos[i].estoque) {
                     printf("\nEstoque insuficiente. Nao e possivel realizar o pedido");
                     pedidos[i].pedido_recusado++;
                 } else {
                     produtos[i].estoque = produtos[i].estoque - pedidos[espaco].qtde_pedida;
-                    pedidos[espaco].soma_pedido++;
+                    pedidos[espaco].soma_pedido+= pedidos[espaco].qtde_pedida;
                     produtos[i].pedidos_total++;
                     printf("Pedido realizado");
                 }
@@ -123,8 +124,7 @@ int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int ta
                     getchar();
 
                     if (pedidos[espaco].qtde_entrada > pedidos[i].maior_entrada) {
-                        pedidos[i].maior_pedido = pedidos[espaco].qtde_pedida;
-                        pedidos[i].numero_maior = pedidos[espaco].numero_pedido;
+                        pedidos[i].maior_entrada = pedidos[espaco].qtde_entrada;
                     }
                     produtos[i].estoque = produtos[i].estoque + pedidos[espaco].qtde_entrada;
                     printf("Entrada realizada");
@@ -165,12 +165,12 @@ int menu() {
 
     return opcao;
 }
-void exibe_produtos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho) {
+void exibe_produtos(tp_produto produtos[], int tamanho) {
     int i;
     printf("\n-- INFORMACOES DO PRODUTO --");
     printf("\nCodigo \t Nome \t\t Preco \t Estoque \t Estoque Minimo \t Quantidade Pedidos \t Quantidade Entradas");
     for (i=0; i<tamanho; i++) {
-        printf("\n %d\t %s\t\t R$%.2f\t %d\t\t %d \t\t\t %d \t\t\t %d", produtos[i].codigo, produtos[i].nome, produtos[i].preco,
+        printf("\n %d\t %s\t\t %.2f\t %d\t\t %d \t\t\t %d \t\t\t %d", produtos[i].codigo, produtos[i].nome, produtos[i].preco,
                produtos[i].estoque, produtos[i].estoqueMinimo, produtos[i].pedidos_total, produtos[i].entradas_total);
     }
     return;
@@ -179,9 +179,16 @@ void exibe_produtos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco
 void infos_pedidos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho) {
     int i;
     printf("\n-- INFORMACOES ESTATISTICAS DE PEDIDOS --");
-    printf("\nQtde Pedidos \t Preco Total Pedidos \t no / qtde maior pedido \t média das quantidades dos pedidos \t Qtde pedidos abaixo do estoque minimo \t Pedidos Recusados");
+    printf("\nQtde Pedidos |\t Preco Total Pedidos |\t Maior Pedido |\tMedia Pedidos |\t Abaixo do Est. Minimo");
     for (i=0; i<tamanho; i++) {
-        printf("\n %d\t %s\t %.2f\t %d\t\t %d", pedidos[i].soma_pedido, (float)produtos[i].preco*pedidos[i].soma_pedido, produtos[i].estoque, produtos[i].estoqueMinimo);
+        pedidos[i].media_pedidos = (float)pedidos[i].soma_pedido/(float)produtos[i].pedidos_total;
+        printf("\n %d\t\t %.2f\t\t %d - %d\t %.1f\t\t %d",
+               produtos[i].pedidos_total,
+               (float)produtos[i].preco*pedidos[i].soma_pedido,
+               pedidos[i].numero_maior,
+               pedidos[i].maior_pedido,
+               (float)pedidos[i].media_pedidos,
+               pedidos[i].contador_est_min);
     }
     return;
 }

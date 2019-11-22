@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #define QTD_MAX_PRODUTOS 5
-#define QTD_MAX_PEDIDOS  3
+#define QTD_MAX_PEDIDOS  10
 #define QTD_MAX_ENTRADAS  10
 #define NAO_EXISTE -1
 #define TAM_NOME_PRODUTO 50
@@ -43,6 +43,6 @@ int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, i
 int cadastrar(tp_produto produtos[], int tamanho);
 int procura_produto(tp_produto produtos[], int tamanho, int codigo);
 int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
-void exibe_produtos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
+void exibe_produtos(tp_produto produtos[], int tamanho);
 
 
