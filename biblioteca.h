@@ -1,7 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
-#define QTD_MAX_PRODUTOS 10
-#define QTD_MAX_PEDIDOS  10
+#define QTD_MAX_PRODUTOS 5
+#define QTD_MAX_PEDIDOS  3
+#define QTD_MAX_ENTRADAS  10
 #define NAO_EXISTE -1
 #define TAM_NOME_PRODUTO 50
 
@@ -20,7 +21,7 @@ typedef struct pedidos
     int numero_pedido;
     int qtde_pedida;
     int qtde_entrada;
-    int entrada_max;
+    int soma_entrada;
     int codigo_pedido;
     int codigo_entrada;
     int soma_pedido;
