@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include"biblioteca.h"
 
 int procura_produto(tp_produto produtos[], int tamanho, int codigo) {
@@ -126,7 +127,6 @@ int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int ta
 
                     if (produtos[i].entradas_total == 0) {
                         pedidos[i].menor_entrada = pedidos[espaco].qtde_entrada;
-                        printf("Tamanho = 1");
                     }
                     if (pedidos[espaco].qtde_entrada < pedidos[i].menor_entrada) {
                         pedidos[i].menor_entrada = pedidos[espaco].qtde_entrada;
@@ -162,7 +162,7 @@ int menu() {
             "05 - INFORMACOES DE MATERIA-PRIMA\n"
             "06 - MOVIMENTACAO DE PEDIDOS\n"
             "07 - MOVIMENTACAO DE ENTRADAS\n"
-            "08 - RELATORIO NAO DEFINIDO\n"
+            "08 - RELATORIO DE VENDAS\n"
             "09 - Sair do programa\n"
             "------------------------------------\n"
             "DIGITE A OPCAO DESEJADA: ");
@@ -216,6 +216,15 @@ void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco
                pedidos[i].menor_entrada,
                (float)pedidos[i].media_entradas,
                pedidos[i].entrada_recusada);
+    }
+    return;
+}
+
+void relatorio_vendas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho){
+    int i;
+    printf("-- RELATORIO DE VENDAS --");
+    for (i=0; i<tamanho; i++) {
+        printf("\n\n%s -> %d\t", produtos[i].nome, pedidos[i].soma_pedido);
     }
     return;
 }

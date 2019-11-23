@@ -44,7 +44,7 @@ int main() {
             break;
 
         case 8: //Relatorio nao definido
-
+            relatorio_vendas(pedidos, Produtos, quantidade_entradas, quantidade_produtos);
             break;
 
         default:
