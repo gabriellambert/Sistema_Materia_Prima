@@ -48,3 +48,4 @@ int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int ta
 void exibe_produtos(tp_produto produtos[], int tamanho);
 void infos_pedidos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
 void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
+void relatorio_vendas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);

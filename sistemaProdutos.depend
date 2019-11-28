@@ -24,3 +24,33 @@
 	<stdlib.h>
 	"biblioteca.h"
 
+1574780073 source:c:\users\user\sistema_materia_prima\main.c
+	<stdio.h>
+	<stdlib.h>
+	"biblioteca.h"
+	"rlutil.h"
+
+1574706441 c:\users\user\sistema_materia_prima\biblioteca.h
+	<stdio.h>
+	<stdlib.h>
+
+1574780449 source:c:\users\user\sistema_materia_prima\biblioteca.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	"biblioteca.h"
+
+1464922168 c:\users\user\sistema_materia_prima\rlutil.h
+	<iostream>
+	<string>
+	<cstdio>
+	<stdio.h>
+	<string.h>
+	<windows.h>
+	<conio.h>
+	<termios.h>
+	<unistd.h>
+	<sys/ioctl.h>
+	<sys/types.h>
+	<sys/time.h>
+
