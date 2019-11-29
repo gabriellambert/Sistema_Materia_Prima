@@ -232,9 +232,9 @@ void relatorio_vendas(tp_movimentacao pedidos[], tp_produto produtos[], int espa
 }
 
 void ascii() {
-    printf("BBBB  EEEE M   M     V     V III N   N DDD   OOO\n"
+    printf("\nBBBB  EEEE M   M     V     V III N   N DDD   OOO\n"
            "B   B E    MM MM     V     V  I  NN  N D  D O   O\n"
            "BBBB  EEE  M M M ---  V   V   I  N N N D  D O   O\n"
            "B   B E    M   M       V V    I  N  NN D  D O   O\n"
-           "BBBB  EEEE M   M        V    III N   N DDD   OOO \n");
+           "BBBB  EEEE M   M        V    III N   N DDD   OOO \n\n");
 }

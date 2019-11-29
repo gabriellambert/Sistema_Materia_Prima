@@ -28,8 +28,10 @@ int main() {
     int quantidade_produtos = 0, quantidade_pedidos = 0, quantidade_entradas= 0;
     int opcao=1;
 
+    ascii();
+
     do {
-        ascii();
+
         opcao=menu();
 
         cls();
