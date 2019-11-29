@@ -24,17 +24,17 @@
 	<stdlib.h>
 	"biblioteca.h"
 
-1574780073 source:c:\users\user\sistema_materia_prima\main.c
+1575035125 source:c:\users\user\sistema_materia_prima\main.c
 	<stdio.h>
 	<stdlib.h>
 	"biblioteca.h"
 	"rlutil.h"
 
-1574706441 c:\users\user\sistema_materia_prima\biblioteca.h
+1575035038 c:\users\user\sistema_materia_prima\biblioteca.h
 	<stdio.h>
 	<stdlib.h>
 
-1574780449 source:c:\users\user\sistema_materia_prima\biblioteca.c
+1575034995 source:c:\users\user\sistema_materia_prima\biblioteca.c
 	<stdio.h>
 	<stdlib.h>
 	<ctype.h>

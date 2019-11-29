@@ -26,9 +26,15 @@ int main() {
     tp_movimentacao pedidos[QTD_MAX_PEDIDOS] = {0};
 
     int quantidade_produtos = 0, quantidade_pedidos = 0, quantidade_entradas= 0;
-    int opcao=1;
+    int opcao=1, status;
 
     ascii();
+
+    if ((status=cria_arquivo_produtos()) != SUCESSO_OPERACAO)
+    {
+        imprime_mensagem_erro_arquivo(status, NOME_ARQUIVO_PRODUTOS);
+        exit(status);
+    }
 
     do {
 
@@ -39,11 +45,11 @@ int main() {
 
         case 2: //Cadastrar produtos
             setColor(BLUE);
-            if (quantidade_produtos<QTD_MAX_PRODUTOS) {
-                quantidade_produtos = cadastrar(Produtos, quantidade_produtos);
-            } else {
-                printf("\nNao e possivel cadastrar mais produtos!!");
+
+            if ((status = cadastrar(Produtos, quantidade_produtos)) != SUCESSO_OPERACAO) {
+                imprime_mensagem_erro_arquivo(status, NOME_ARQUIVO_PRODUTOS);
             }
+
             resetColor();
             break;
 

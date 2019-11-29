@@ -15,8 +15,9 @@ int procura_produto(tp_produto produtos[], int tamanho, int codigo) {
 }
 
 int cadastrar(tp_produto produtos[], int tamanho) {
-    //char produtos[tamanho].nome[TAM_NOME_PRODUTO] = " ";
-    int codigo;
+    FILE *arquivo_produtos;
+    int codigo, status;
+
     printf("\n    ==== CADASTRO DE PRODUTOS ====\n");
     if (tamanho <= QTD_MAX_PRODUTOS) {
 
@@ -43,11 +44,20 @@ int cadastrar(tp_produto produtos[], int tamanho) {
         } else {
             printf("\nProduto com codigo %d ja existente", codigo);
         }
-    } else {
-        printf("Você já cadastrou a quantidade maxima, de 5 produtos permitida!");
+
+    if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "ab+")) == NULL) {
+        return ERRO_NA_ABERTURA_DE_ARQUIVO;
     }
 
-    return tamanho;
+    if (fwrite(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0) {
+        fclose(arquivo_produtos);
+        return ERRO_NA_GRAVACAO_DE_ARQUIVO;
+    }
+
+    fclose(arquivo_produtos);
+    }
+
+    return SUCESSO_OPERACAO;
 }
 
 int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho)
@@ -237,4 +247,43 @@ void ascii() {
            "BBBB  EEE  M M M ---  V   V   I  N N N D  D O   O\n"
            "B   B E    M   M       V V    I  N  NN D  D O   O\n"
            "BBBB  EEEE M   M        V    III N   N DDD   OOO \n\n");
+}
+
+void imprime_mensagem_erro_arquivo(int erro, char *nome_arquivo) {
+    switch(erro)
+    {
+    case ERRO_NA_CRIACAO_DE_ARQUIVO:
+        printf("\nErro na criacao do arquivo %s!", nome_arquivo);
+        break;
+    case ERRO_NA_ABERTURA_DE_ARQUIVO:
+        printf("\nErro na abertura do arquivo %s!", nome_arquivo);
+        break;
+    case ERRO_NA_LEITURA_DE_ARQUIVO:
+        printf("\nErro na leitura do arquivo %s!",  nome_arquivo);
+        break;
+    case ERRO_NA_GRAVACAO_DE_ARQUIVO:
+        printf("\nErro na gravacao do arquivo %s!",  nome_arquivo);
+        break;
+    case REGISTRO_EXISTENTE:
+        printf("\nRegistro já existente no arquivo %s!",  nome_arquivo);
+        break;
+    case REGISTRO_NAO_ENCONTRADO:
+        printf("\nRegistro não encontrado no arquivo %s!",  nome_arquivo);
+        break;
+    default:
+        printf("\nCódigo de erro desconhecido!");
+    }
+    return;
+}
+
+int cria_arquivo_produtos() {
+    FILE *arquivo_produtos;
+
+    if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb")) == NULL)
+        if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "wb")) == NULL)
+           return ERRO_NA_CRIACAO_DE_ARQUIVO;
+
+    fclose(arquivo_produtos);
+    return SUCESSO_OPERACAO;
+
 }
