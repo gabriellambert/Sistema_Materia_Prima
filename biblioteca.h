@@ -51,7 +51,7 @@ typedef struct pedidos
 
 int menu();
 void infos();
-int fazer_pedido(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
+int fazer_pedido();
 int cadastrar();
 int procura_produto(tp_produto produtos[], int tamanho, int codigo);
 int encontra_produto(int codigo);

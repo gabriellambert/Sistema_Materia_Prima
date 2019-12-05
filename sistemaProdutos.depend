@@ -30,11 +30,11 @@
 	"biblioteca.h"
 	"rlutil.h"
 
-1575557164 c:\users\user\sistema_materia_prima\biblioteca.h
+1575564508 c:\users\user\sistema_materia_prima\biblioteca.h
 	<stdio.h>
 	<stdlib.h>
 
-1575557374 source:c:\users\user\sistema_materia_prima\biblioteca.c
+1575565225 source:c:\users\user\sistema_materia_prima\biblioteca.c
 	<stdio.h>
 	<stdlib.h>
 	<ctype.h>
