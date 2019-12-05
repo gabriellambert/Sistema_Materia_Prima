@@ -14,36 +14,80 @@ int procura_produto(tp_produto produtos[], int tamanho, int codigo) {
     return posicao;
 }
 
-int cadastrar(tp_produto produtos[], int tamanho) {
+int encontra_produto(int codigo){
+    FILE                    *arquivo_produtos;
+    tp_produto     produtos;
+    int                     conta_registro  = 1,
+                            status = REGISTRO_NAO_ENCONTRADO;
+
+    if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb")) == NULL)
+        return ERRO_NA_ABERTURA_DE_ARQUIVO;
+
+    if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0)
+    {
+        if (!feof(arquivo_produtos))
+        {
+            fclose(arquivo_produtos);
+            return ERRO_NA_LEITURA_DE_ARQUIVO;
+        }
+    }
+
+    while(!feof(arquivo_produtos))
+    {
+        if (produtos.codigo == codigo)
+        {
+            status = REGISTRO_EXISTENTE;
+            break;
+        }
+        conta_registro += 1;
+
+        if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0)
+        {
+            if (!feof(arquivo_produtos))
+            {
+                fclose(arquivo_produtos);
+                return ERRO_NA_LEITURA_DE_ARQUIVO;
+            }
+        }
+    }
+    fclose(arquivo_produtos);
+    return status;
+}
+
+int cadastrar() {
     FILE *arquivo_produtos;
+    tp_produto produtos;
+
     int codigo, status;
 
     printf("\n    ==== CADASTRO DE PRODUTOS ====\n");
-    if (tamanho <= QTD_MAX_PRODUTOS) {
 
-        printf("\nEntre com o codigo: ");
-        scanf("%d", &codigo);
+
+    printf("\nEntre com o codigo: ");
+    scanf("%d", &codigo);
+    getchar();
+
+    status = encontra_produto(codigo);
+    if (status != REGISTRO_NAO_ENCONTRADO){
+        return status;
+    }
+
+        produtos.codigo = codigo;
+        printf("Entre com o nome do produto: ");
+        scanf("%50[^\n]s", produtos.nome);
         getchar();
-        if (procura_produto(produtos, tamanho, codigo)==NAO_EXISTE){
-            produtos[tamanho].codigo = codigo;
-            printf("Entre com o nome do produto: ");
-            scanf("%50[^\n]s", produtos[tamanho].nome);
-            getchar();
-    //        printf("\n--> %s...", produtos[tamanho].nome);
-    //        getchar();
-            printf("Entre com o preco do produto: ");
-            scanf("%f", &produtos[tamanho].preco);
-            getchar();
-            printf("Entre com a quantidade inicial do produto: ");
-            scanf("%d", &produtos[tamanho].estoque);
-            getchar();
-            printf("Entre com o estoque minimo do produto: ");
-            scanf("%d", &produtos[tamanho].estoqueMinimo);
-            getchar();
-            tamanho = tamanho+1;
-        } else {
-            printf("\nProduto com codigo %d ja existente", codigo);
-        }
+//        printf("\n--> %s...", produtos[tamanho].nome);
+//        getchar();
+        printf("Entre com o preco do produto: ");
+        scanf("%f", &produtos.preco);
+        getchar();
+        printf("Entre com a quantidade inicial do produto: ");
+        scanf("%d", &produtos.estoque);
+        getchar();
+        printf("Entre com o estoque minimo do produto: ");
+        scanf("%d", &produtos.estoqueMinimo);
+        getchar();
+
 
     if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "ab+")) == NULL) {
         return ERRO_NA_ABERTURA_DE_ARQUIVO;
@@ -55,8 +99,6 @@ int cadastrar(tp_produto produtos[], int tamanho) {
     }
 
     fclose(arquivo_produtos);
-    }
-
     return SUCESSO_OPERACAO;
 }
 
@@ -180,15 +222,38 @@ int menu() {
 
     return opcao;
 }
-void exibe_produtos(tp_produto produtos[], int tamanho) {
-    int i;
+int exibe_produtos() {
+
+    FILE *arquivo_produtos;
+    tp_produto produtos;
+
+    if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb")) == NULL){
+        return ERRO_NA_ABERTURA_DE_ARQUIVO;
+    }
+
     printf("\n    ==== INFORMACOES DO PRODUTO ====\n");
     printf("\nCodigo \t Nome \t\t Preco \t Estoque \t Estoque Minimo \t Quantidade Pedidos \t Quantidade Entradas");
-    for (i=0; i<tamanho; i++) {
-        printf("\n %d\t %s\t\t %.2f\t %d\t\t %d \t\t\t %d \t\t\t %d", produtos[i].codigo, produtos[i].nome, produtos[i].preco,
-               produtos[i].estoque, produtos[i].estoqueMinimo, produtos[i].pedidos_total, produtos[i].entradas_total);
+
+    if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
+        if (!feof(arquivo_produtos)){
+            fclose(arquivo_produtos);
+            return ERRO_NA_LEITURA_DE_ARQUIVO;
+        }
     }
-    return;
+    while(!feof(arquivo_produtos)){
+        printf("\n %d\t %s\t\t %.2f\t %d\t\t %d \t\t\t %d \t\t\t %d", produtos.codigo, produtos.nome, produtos.preco,
+               produtos.estoque, produtos.estoqueMinimo, produtos.pedidos_total, produtos.entradas_total);
+
+        if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
+                if (!feof(arquivo_produtos)){
+                    fclose(arquivo_produtos);
+                    return ERRO_NA_LEITURA_DE_ARQUIVO;
+                }
+        }
+    }
+
+    fclose(arquivo_produtos);
+    return SUCESSO_OPERACAO;
 }
 
 void infos_pedidos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho) {
