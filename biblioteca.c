@@ -88,6 +88,9 @@ int cadastrar() {
         scanf("%d", &produtos.estoqueMinimo);
         getchar();
 
+        produtos.entradas_total = 0;
+        produtos.pedidos_total = 0;
+
 
     if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "ab+")) == NULL) {
         return ERRO_NA_ABERTURA_DE_ARQUIVO;
@@ -143,7 +146,7 @@ int fazer_pedido(){
     tp_produto produtos;
     tp_movimentacao pedidos;
 
-    int i = 0, codigo, qtdePedida = 0, status, posicao = 0;
+    int codigo = 0, status, posicao = 0;
 
     printf("\n    ==== REALIZAR PEDIDO ====\n");
     if (sizeof(tp_produto) > 0) {
@@ -184,7 +187,7 @@ int fazer_pedido(){
                 scanf("%d", &pedidos.qtde_pedida);
                 getchar();
 
-                if (pedidos.qtde_pedida > produtos.estoque || produtos.estoque == 0) {
+                if (pedidos.qtde_pedida > produtos.estoque) {
                     printf("\nEstoque insuficiente. Nao e possivel realizar o pedido");
                     pedidos.pedido_recusado++;
                 } else {
@@ -233,52 +236,85 @@ int fazer_pedido(){
     return SUCESSO_OPERACAO;
 }
 
-int entrada(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho)
-{
-    int i = 0;
-    int codigo;
-    int qtdePedida = 0;
+int entrada(){
+    FILE *arquivo_produtos;
+    tp_produto produtos;
+    tp_movimentacao pedidos;
 
-    if (tamanho > 0) {
-        if (produtos[i].entradas_total < QTD_MAX_ENTRADAS) {
-            printf("\n    ==== REALIZAR ENTRADA ====\n");
-            printf("\nEntre com o codigo do produto: ");
-            scanf("%d", &codigo);
-            getchar();
+    int codigo = 0, status, posicao = 0;
 
-            if ((i = procura_produto(produtos, tamanho, codigo))!= NAO_EXISTE) {
-                if (produtos[i].estoque >= produtos[i].estoqueMinimo) {
+    if (sizeof(tp_produto) > 0) {
+
+        printf("\n    ==== REALIZAR ENTRADA ====\n");
+        printf("\nEntre com o codigo do produto: ");
+        scanf("%d", &codigo);
+        getchar();
+
+        status = encontra_produto(codigo);
+        if (status != REGISTRO_EXISTENTE) return status;
+
+        if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb+")) == NULL)
+        return ERRO_NA_ABERTURA_DE_ARQUIVO;
+
+        if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
+            if (!feof(arquivo_produtos)){
+                fclose(arquivo_produtos);
+                return ERRO_NA_LEITURA_DE_ARQUIVO;
+            }
+        }
+
+        while(!feof(arquivo_produtos)){
+
+            if (produtos.codigo == codigo){
+
+                if (produtos.estoque >= produtos.estoqueMinimo) {
                     printf("\nA quantidade em estoque e maior ou igual ao estoque minimo. Entrada recusada!");
-                    pedidos[i].entrada_recusada++;
+                    pedidos.entrada_recusada++;
                 } else {
                     printf("\nEntre com a quantidade de entrada: ");
-                    scanf("%d", &pedidos[espaco].qtde_entrada);
+                    scanf("%d", &pedidos.qtde_entrada);
                     getchar();
 
-                    if (produtos[i].entradas_total == 0) {
-                        pedidos[i].menor_entrada = pedidos[espaco].qtde_entrada;
+                    if (produtos.entradas_total == 0) {
+                        pedidos.menor_entrada = pedidos.qtde_entrada;
                     }
-                    if (pedidos[espaco].qtde_entrada < pedidos[i].menor_entrada) {
-                        pedidos[i].menor_entrada = pedidos[espaco].qtde_entrada;
+                    if (pedidos.qtde_entrada < pedidos.menor_entrada) {
+                        pedidos.menor_entrada = pedidos.qtde_entrada;
                     }
-                    produtos[i].estoque = produtos[i].estoque + pedidos[espaco].qtde_entrada;
-                    pedidos[i].valor_total_entradas += (float)pedidos[espaco].qtde_entrada * produtos[i].preco;
-                    pedidos[i].soma_entrada+=pedidos[espaco].qtde_entrada;
-                    produtos[i].entradas_total++;
+                    produtos.estoque += pedidos.qtde_entrada;
+                    pedidos.valor_total_entradas += (float)pedidos.qtde_entrada * produtos.preco;
+                    pedidos.soma_entrada+=pedidos.qtde_entrada;
+                    produtos.entradas_total++;
                     printf("Entrada realizada");
                 }
 
-            } else {
-                printf("\nProduto nao cadastrado, codigo: %d", codigo);
+                // ftell() obtem a posicao corrente  do  arquivo,  apos  o fread
+                // a posicao e o  próximo  registro. Então, para obter a posição
+                // correta para  atualizar,  deve-se subtrair a posicao corrente
+                // do tamanho da estrutura.
+                posicao = ftell(arquivo_produtos) - sizeof(tp_produto);
+                fseek(arquivo_produtos, posicao, SEEK_SET);
+                if (fwrite(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0)
+                    return ERRO_NA_GRAVACAO_DE_ARQUIVO;
+
+                break;
             }
-        } else {
-           printf("\nNao e possivel realizar mais entradas. Total de %d entradas ja realizadas", QTD_MAX_ENTRADAS);
+
+            if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0)
+            {
+                if (!feof(arquivo_produtos))
+                {
+                    fclose(arquivo_produtos);
+                    return ERRO_NA_LEITURA_DE_ARQUIVO;
+                }
+            }
         }
     } else {
         printf("\nNao e possivel cadastrar uma entrada. Nao ha produtos cadastrados.");
     }
 
-    return qtdePedida;
+    fclose(arquivo_produtos);
+    return SUCESSO_OPERACAO;
 }
 
 int menu() {
