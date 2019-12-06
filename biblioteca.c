@@ -197,7 +197,6 @@ int fazer_pedido(){
 
                 if (produtos.estoque <= produtos.estoqueMinimo) {
                     printf("\nAtencao! O estoque atual esta abaixo do estoque minimo.");
-                    pedidos.contador_est_min++;
                 }
 
                 printf("\nEntre com numero do pedido: ");
@@ -220,6 +219,9 @@ int fazer_pedido(){
                     produtos.pedidos_total++;
                     produtos.preco_total+= (float)produtos.qtde_pedida * produtos.preco;
                     printf("Pedido realizado");
+                    if (produtos.estoque <= produtos.estoqueMinimo) {
+                        produtos.contador_est_min++;
+                    }
                 }
 
                 // ftell() obtem a posicao corrente  do  arquivo,  apos  o fread
@@ -337,7 +339,6 @@ int infos_pedidos() {
 
     FILE *arquivo_produtos;
     tp_produto produtos;
-    tp_movimentacao pedidos;
 
     if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb")) == NULL){
         return ERRO_NA_ABERTURA_DE_ARQUIVO;
@@ -384,22 +385,50 @@ int infos_pedidos() {
     return SUCESSO_OPERACAO;
 }
 
-void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho) {
-    int i;
+int infos_entradas() {
+
+    FILE *arquivo_produtos;
+    tp_produto produtos;
+
+    if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb")) == NULL){
+        return ERRO_NA_ABERTURA_DE_ARQUIVO;
+    }
     printf("\n    ==== INFORMACOES ESTATISTICAS DE ENTRADAS ====\n");
 
-    for (i=0; i<tamanho; i++) {
-        pedidos[i].media_entradas = (float)pedidos[i].soma_entrada/(float)pedidos[i].entradas_total;
-        printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos[i].nome);
+    if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0) {
+        if (!feof(arquivo_produtos)) {
+            fclose(arquivo_produtos);
+            return ERRO_NA_LEITURA_DE_ARQUIVO;
+        }
+    }
+
+    while(!feof(arquivo_produtos)) {
+
+        if (produtos.entradas_total == 0) {
+            produtos.media_entradas = 0;
+        } else {
+            produtos.media_entradas = (float)produtos.soma_pedido/(float)produtos.pedidos_total;
+        }
+
+        printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos.nome);
         printf("\nQtde Entradas |\t Preco Total Entradas |\t Menor Entrada | Media Entradas | Entradas Recusadas");
         printf("\n %d\t\t %.2f\t\t\t %d\t\t %.1f\t\t\t %d",
-               pedidos[i].entradas_total,
-               pedidos[i].valor_total_entradas,
-               pedidos[i].menor_entrada,
-               (float)pedidos[i].media_entradas,
-               pedidos[i].entrada_recusada);
+               produtos.entradas_total,
+               produtos.valor_total_entradas,
+               produtos.menor_entrada,
+               produtos.media_entradas,
+               produtos.entrada_recusada);
+        if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
+            if (!feof(arquivo_produtos)){
+                fclose(arquivo_produtos);
+                return ERRO_NA_LEITURA_DE_ARQUIVO;
+            }
+        }
     }
-    return;
+
+
+    fclose(arquivo_produtos);
+    return SUCESSO_OPERACAO;
 }
 
 void relatorio_vendas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho){

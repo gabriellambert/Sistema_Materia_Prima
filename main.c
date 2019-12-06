@@ -91,6 +91,9 @@ int main() {
 
         case 7: //Informacoes de realizacao de entradas
             setColor(GREEN);
+            if ((status = infos_entradas()) != SUCESSO_OPERACAO) {
+                imprime_mensagem_erro_arquivo(status, NOME_ARQUIVO_PRODUTOS);
+            }
             //infos_entradas(pedidos, Produtos, quantidade_entradas, quantidade_produtos);
             resetColor();
             break;
