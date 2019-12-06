@@ -82,6 +82,9 @@ int main() {
 
         case 6: //Informacoes de realizacao de pedidos
             setColor(GREEN);
+            if ((status = infos_pedidos()) != SUCESSO_OPERACAO) {
+                imprime_mensagem_erro_arquivo(status, NOME_ARQUIVO_PRODUTOS);
+            }
             //infos_pedidos(pedidos, Produtos, quantidade_entradas, quantidade_produtos);
             resetColor();
             break;

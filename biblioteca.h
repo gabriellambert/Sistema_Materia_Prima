@@ -20,8 +20,6 @@ typedef struct produtos
     float preco;
     int estoque;
     int estoqueMinimo;
-    int pedidos_total;
-    int entradas_total;
 } tp_produto;
 
 typedef struct pedidos
@@ -44,6 +42,8 @@ typedef struct pedidos
     int pedido_recusado;
     int entrada_recusada;
     float valor_total_entradas;
+    int pedidos_total;
+    int entradas_total;
 } tp_movimentacao;
 
 int menu();
@@ -54,7 +54,7 @@ int procura_produto(tp_produto produtos[], int tamanho, int codigo);
 int encontra_produto(int codigo);
 int entrada();
 int exibe_produtos();
-void infos_pedidos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
+int infos_pedidos();
 void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
 void relatorio_vendas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
 void imprime_mensagem_erro_arquivo(int erro, char *nome_arquivo);

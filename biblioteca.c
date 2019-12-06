@@ -57,6 +57,7 @@ int encontra_produto(int codigo){
 int cadastrar() {
     FILE *arquivo_produtos;
     tp_produto produtos;
+    tp_movimentacao pedidos;
 
     int codigo, status;
 
@@ -88,8 +89,8 @@ int cadastrar() {
         scanf("%d", &produtos.estoqueMinimo);
         getchar();
 
-        produtos.entradas_total = 0;
-        produtos.pedidos_total = 0;
+        pedidos.entradas_total = 0;
+        pedidos.pedidos_total = 0;
 
 
     if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "ab+")) == NULL) {
@@ -109,6 +110,7 @@ int exibe_produtos() {
 
     FILE *arquivo_produtos;
     tp_produto produtos;
+    tp_movimentacao pedidos;
 
     if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb")) == NULL){
         return ERRO_NA_ABERTURA_DE_ARQUIVO;
@@ -123,9 +125,10 @@ int exibe_produtos() {
             return ERRO_NA_LEITURA_DE_ARQUIVO;
         }
     }
+
     while(!feof(arquivo_produtos)){
         printf("\n %d\t %s\t\t %.2f\t %d\t\t %d \t\t\t %d \t\t\t %d", produtos.codigo, produtos.nome, produtos.preco,
-               produtos.estoque, produtos.estoqueMinimo, produtos.pedidos_total, produtos.entradas_total);
+               produtos.estoque, produtos.estoqueMinimo, pedidos.pedidos_total, pedidos.entradas_total);
 
         if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
                 if (!feof(arquivo_produtos)){
@@ -157,9 +160,6 @@ int fazer_pedido(){
 
         status = encontra_produto(codigo);
         if (status != REGISTRO_EXISTENTE) return status;
-
-
-        //--------------------------------------------------------------------
 
         if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb+")) == NULL)
         return ERRO_NA_ABERTURA_DE_ARQUIVO;
@@ -197,7 +197,7 @@ int fazer_pedido(){
                     }
                     produtos.estoque -= pedidos.qtde_pedida;
                     pedidos.soma_pedido += pedidos.qtde_pedida;
-                    produtos.pedidos_total++;
+                    pedidos.pedidos_total++;
                     pedidos.preco_total+= (float)pedidos.qtde_pedida * produtos.preco;
                     printf("Pedido realizado");
                 }
@@ -223,10 +223,6 @@ int fazer_pedido(){
                 }
             }
         }
-
-
-        //--------------------------------------------------------------------
-
 
     } else {
         printf("\nNao e possivel realizar pedido. Nao ha produtos cadastrados no sistema.");
@@ -275,7 +271,7 @@ int entrada(){
                     scanf("%d", &pedidos.qtde_entrada);
                     getchar();
 
-                    if (produtos.entradas_total == 0) {
+                    if (pedidos.entradas_total == 0) {
                         pedidos.menor_entrada = pedidos.qtde_entrada;
                     }
                     if (pedidos.qtde_entrada < pedidos.menor_entrada) {
@@ -284,7 +280,7 @@ int entrada(){
                     produtos.estoque += pedidos.qtde_entrada;
                     pedidos.valor_total_entradas += (float)pedidos.qtde_entrada * produtos.preco;
                     pedidos.soma_entrada+=pedidos.qtde_entrada;
-                    produtos.entradas_total++;
+                    pedidos.entradas_total++;
                     printf("Entrada realizada");
                 }
 
@@ -317,45 +313,50 @@ int entrada(){
     return SUCESSO_OPERACAO;
 }
 
-int menu() {
-    int opcao;
-    printf("\n------------------------------------"
-            "\n           MENU DE OPCOES\n"
-            "------------------------------------\n"
-            "02 - CADASTRAR MATERIA-PRIMA\n"
-            "03 - FAZER PEDIDOS\n"
-            "04 - ENTRADA DE MATERIA-PRIMA\n"
-            "05 - INFORMACOES DE MATERIA-PRIMA\n"
-            "06 - MOVIMENTACAO DE PEDIDOS\n"
-            "07 - MOVIMENTACAO DE ENTRADAS\n"
-            "08 - RELATORIO DE VENDAS\n"
-            "09 - Sair do programa\n"
-            "------------------------------------\n"
-            "DIGITE A OPCAO DESEJADA: ");
-    scanf("%d", &opcao);
-    getchar();
+int infos_pedidos() {
 
-    return opcao;
-}
+    FILE *arquivo_produtos;
+    tp_produto produtos;
+    tp_movimentacao pedidos;
 
-void infos_pedidos(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho) {
-    int i;
+    if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb")) == NULL){
+        return ERRO_NA_ABERTURA_DE_ARQUIVO;
+    }
+
     printf("\n    ==== INFORMACOES ESTATISTICAS DE PEDIDOS ====\n");
 
-    for (i=0; i<tamanho; i++) {
-        pedidos[i].media_pedidos = (float)pedidos[i].soma_pedido/(float)produtos[i].pedidos_total;
-        printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos[i].nome);
+    if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0) {
+        if (!feof(arquivo_produtos)) {
+            fclose(arquivo_produtos);
+            return ERRO_NA_LEITURA_DE_ARQUIVO;
+        }
+    }
+
+    while(!feof(arquivo_produtos)) {
+
+        pedidos.media_pedidos = (float)pedidos.soma_pedido/(float)pedidos.pedidos_total;
+        printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos.nome);
         printf("\nQtde Pedidos |\t Preco Total Pedidos |\t Maior Pedido |\tMedia Pedidos |\t Abaixo do Est. Minimo |\t Pedidos Recusados");
         printf("\n %d\t\t %.2f\t\t\t %d - %d\t\t %.1f\t\t %d\t\t\t\t %d",
-               produtos[i].pedidos_total,
-               pedidos[i].preco_total,
-               pedidos[i].numero_maior,
-               pedidos[i].maior_pedido,
-               (float)pedidos[i].soma_pedido/(float)produtos[i].pedidos_total,
-               pedidos[i].contador_est_min,
-               pedidos[i].pedido_recusado);
+               pedidos.pedidos_total,
+               pedidos.preco_total,
+               pedidos.numero_maior,
+               pedidos.maior_pedido,
+               (float)pedidos.soma_pedido/(float)pedidos.pedidos_total,
+               pedidos.contador_est_min,
+               pedidos.pedido_recusado);
+
+        if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
+                if (!feof(arquivo_produtos)){
+                    fclose(arquivo_produtos);
+                    return ERRO_NA_LEITURA_DE_ARQUIVO;
+                }
+        }
     }
-    return;
+
+
+    fclose(arquivo_produtos);
+    return SUCESSO_OPERACAO;
 }
 
 void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho) {
@@ -363,11 +364,11 @@ void infos_entradas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco
     printf("\n    ==== INFORMACOES ESTATISTICAS DE ENTRADAS ====\n");
 
     for (i=0; i<tamanho; i++) {
-        pedidos[i].media_entradas = (float)pedidos[i].soma_entrada/(float)produtos[i].entradas_total;
+        pedidos[i].media_entradas = (float)pedidos[i].soma_entrada/(float)pedidos[i].entradas_total;
         printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos[i].nome);
         printf("\nQtde Entradas |\t Preco Total Entradas |\t Menor Entrada | Media Entradas | Entradas Recusadas");
         printf("\n %d\t\t %.2f\t\t\t %d\t\t %.1f\t\t\t %d",
-               produtos[i].entradas_total,
+               pedidos[i].entradas_total,
                pedidos[i].valor_total_entradas,
                pedidos[i].menor_entrada,
                (float)pedidos[i].media_entradas,
@@ -433,4 +434,25 @@ int cria_arquivo_produtos() {
     fclose(arquivo_produtos);
     return SUCESSO_OPERACAO;
 
+}
+
+int menu() {
+    int opcao;
+    printf("\n------------------------------------"
+            "\n           MENU DE OPCOES\n"
+            "------------------------------------\n"
+            "02 - CADASTRAR MATERIA-PRIMA\n"
+            "03 - FAZER PEDIDOS\n"
+            "04 - ENTRADA DE MATERIA-PRIMA\n"
+            "05 - INFORMACOES DE MATERIA-PRIMA\n"
+            "06 - MOVIMENTACAO DE PEDIDOS\n"
+            "07 - MOVIMENTACAO DE ENTRADAS\n"
+            "08 - RELATORIO DE VENDAS\n"
+            "09 - Sair do programa\n"
+            "------------------------------------\n"
+            "DIGITE A OPCAO DESEJADA: ");
+    scanf("%d", &opcao);
+    getchar();
+
+    return opcao;
 }
