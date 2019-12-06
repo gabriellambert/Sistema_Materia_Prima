@@ -20,6 +20,27 @@ typedef struct produtos
     float preco;
     int estoque;
     int estoqueMinimo;
+
+    int pedido_maximo;
+    int numero_pedido;
+    int qtde_pedida;
+    int qtde_entrada;
+    int soma_entrada;
+    int codigo_pedido;
+    int codigo_entrada;
+    int soma_pedido;
+    float preco_total;
+    int maior_pedido;
+    int menor_entrada;
+    int numero_maior;
+    float media_pedidos;
+    float media_entradas;
+    int contador_est_min;
+    int pedido_recusado;
+    int entrada_recusada;
+    float valor_total_entradas;
+    int pedidos_total;
+    int entradas_total;
 } tp_produto;
 
 typedef struct pedidos

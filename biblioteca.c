@@ -89,8 +89,28 @@ int cadastrar() {
         scanf("%d", &produtos.estoqueMinimo);
         getchar();
 
-        pedidos.entradas_total = 0;
-        pedidos.pedidos_total = 0;
+        produtos.entradas_total = 0;
+        produtos.pedidos_total = 0;
+        produtos.pedido_maximo = 0;
+        produtos.numero_pedido = 0;
+        produtos.qtde_pedida = 0;
+        produtos.qtde_entrada = 0;
+        produtos.soma_entrada = 0;
+        produtos.codigo_pedido = 0;
+        produtos.codigo_entrada = 0;
+        produtos.soma_pedido = 0;
+        produtos.preco_total = 0;
+        produtos.maior_pedido = 0;
+        produtos.menor_entrada = 0;
+        produtos.numero_maior = 0;
+        produtos.media_pedidos = 0;
+        produtos.media_entradas = 0;
+        produtos.contador_est_min = 0;
+        produtos.pedido_recusado = 0;
+        produtos.entrada_recusada = 0;
+        produtos.valor_total_entradas = 0;
+        produtos.pedidos_total = 0;
+        produtos.entradas_total = 0;
 
 
     if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "ab+")) == NULL) {
@@ -128,7 +148,7 @@ int exibe_produtos() {
 
     while(!feof(arquivo_produtos)){
         printf("\n %d\t %s\t\t %.2f\t %d\t\t %d \t\t\t %d \t\t\t %d", produtos.codigo, produtos.nome, produtos.preco,
-               produtos.estoque, produtos.estoqueMinimo, pedidos.pedidos_total, pedidos.entradas_total);
+               produtos.estoque, produtos.estoqueMinimo, produtos.pedidos_total, produtos.entradas_total);
 
         if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
                 if (!feof(arquivo_produtos)){
@@ -181,24 +201,24 @@ int fazer_pedido(){
                 }
 
                 printf("\nEntre com numero do pedido: ");
-                scanf("%d", &pedidos.codigo_pedido);
+                scanf("%d", &produtos.codigo_pedido);
                 getchar();
                 printf("\nEntre com a quantidade do pedido: ");
-                scanf("%d", &pedidos.qtde_pedida);
+                scanf("%d", &produtos.qtde_pedida);
                 getchar();
 
-                if (pedidos.qtde_pedida > produtos.estoque) {
+                if (produtos.qtde_pedida > produtos.estoque) {
                     printf("\nEstoque insuficiente. Nao e possivel realizar o pedido");
-                    pedidos.pedido_recusado++;
+                    produtos.pedido_recusado++;
                 } else {
-                    if (pedidos.qtde_pedida > pedidos.maior_pedido) {
-                        pedidos.maior_pedido = pedidos.qtde_pedida;
-                        pedidos.numero_maior = pedidos.codigo_pedido;
+                    if (produtos.qtde_pedida > produtos.maior_pedido) {
+                        produtos.maior_pedido = produtos.qtde_pedida;
+                        produtos.numero_maior = produtos.codigo_pedido;
                     }
-                    produtos.estoque -= pedidos.qtde_pedida;
-                    pedidos.soma_pedido += pedidos.qtde_pedida;
-                    pedidos.pedidos_total++;
-                    pedidos.preco_total+= (float)pedidos.qtde_pedida * produtos.preco;
+                    produtos.estoque -= produtos.qtde_pedida;
+                    produtos.soma_pedido += produtos.qtde_pedida;
+                    produtos.pedidos_total++;
+                    produtos.preco_total+= (float)produtos.qtde_pedida * produtos.preco;
                     printf("Pedido realizado");
                 }
 
@@ -265,22 +285,22 @@ int entrada(){
 
                 if (produtos.estoque >= produtos.estoqueMinimo) {
                     printf("\nA quantidade em estoque e maior ou igual ao estoque minimo. Entrada recusada!");
-                    pedidos.entrada_recusada++;
+                    produtos.entrada_recusada++;
                 } else {
                     printf("\nEntre com a quantidade de entrada: ");
-                    scanf("%d", &pedidos.qtde_entrada);
+                    scanf("%d", &produtos.qtde_entrada);
                     getchar();
 
-                    if (pedidos.entradas_total == 0) {
-                        pedidos.menor_entrada = pedidos.qtde_entrada;
+                    if (produtos.entradas_total == 0) {
+                        produtos.menor_entrada = produtos.qtde_entrada;
                     }
-                    if (pedidos.qtde_entrada < pedidos.menor_entrada) {
-                        pedidos.menor_entrada = pedidos.qtde_entrada;
+                    if (produtos.qtde_entrada < produtos.menor_entrada) {
+                        produtos.menor_entrada = produtos.qtde_entrada;
                     }
-                    produtos.estoque += pedidos.qtde_entrada;
-                    pedidos.valor_total_entradas += (float)pedidos.qtde_entrada * produtos.preco;
-                    pedidos.soma_entrada+=pedidos.qtde_entrada;
-                    pedidos.entradas_total++;
+                    produtos.estoque += produtos.qtde_entrada;
+                    produtos.valor_total_entradas += (float)produtos.qtde_entrada * produtos.preco;
+                    produtos.soma_entrada+=produtos.qtde_entrada;
+                    produtos.entradas_total++;
                     printf("Entrada realizada");
                 }
 
@@ -323,7 +343,7 @@ int infos_pedidos() {
         return ERRO_NA_ABERTURA_DE_ARQUIVO;
     }
 
-    printf("\n    ==== INFORMACOES ESTATISTICAS DE PEDIDOS ====\n");
+    printf("\n\n\n\t\t\t\t   ==== INFORMACOES ESTATISTICAS DE PEDIDOS ====\n");
 
     if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0) {
         if (!feof(arquivo_produtos)) {
@@ -334,17 +354,22 @@ int infos_pedidos() {
 
     while(!feof(arquivo_produtos)) {
 
-        pedidos.media_pedidos = (float)pedidos.soma_pedido/(float)pedidos.pedidos_total;
+        if (produtos.pedidos_total == 0) {
+            produtos.media_pedidos = 0;
+        } else {
+            produtos.media_pedidos = (float)produtos.soma_pedido/(float)produtos.pedidos_total;
+        }
+
         printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos.nome);
-        printf("\nQtde Pedidos |\t Preco Total Pedidos |\t Maior Pedido |\tMedia Pedidos |\t Abaixo do Est. Minimo |\t Pedidos Recusados");
-        printf("\n %d\t\t %.2f\t\t\t %d - %d\t\t %.1f\t\t %d\t\t\t\t %d",
-               pedidos.pedidos_total,
-               pedidos.preco_total,
-               pedidos.numero_maior,
-               pedidos.maior_pedido,
-               (float)pedidos.soma_pedido/(float)pedidos.pedidos_total,
-               pedidos.contador_est_min,
-               pedidos.pedido_recusado);
+        printf("\nQtde Pedidos |\t Preco Total Pedidos |\t Maior Pedido |\tMedia Pedidos |\t Abaixo do Est. Minimo | Pedidos Recusados");
+        printf("\n %d\t\t %.2f\t\t\t Nº %d - %d\t\t %.1f\t\t %d\t\t\t\t %d",
+               produtos.pedidos_total,
+               produtos.preco_total,
+               produtos.numero_maior,
+               produtos.maior_pedido,
+               produtos.media_pedidos,
+               produtos.contador_est_min,
+               produtos.pedido_recusado);
 
         if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
                 if (!feof(arquivo_produtos)){
@@ -438,7 +463,7 @@ int cria_arquivo_produtos() {
 
 int menu() {
     int opcao;
-    printf("\n------------------------------------"
+    printf("\n\n------------------------------------"
             "\n           MENU DE OPCOES\n"
             "------------------------------------\n"
             "02 - CADASTRAR MATERIA-PRIMA\n"
