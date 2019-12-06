@@ -137,7 +137,7 @@ int exibe_produtos() {
     }
 
     printf("\n    ==== INFORMACOES DO PRODUTO ====\n");
-    printf("\nCodigo \t Nome \t\t Preco \t Estoque \t Estoque Minimo \t Quantidade Pedidos \t Quantidade Entradas");
+    printf("\nCodigo \t Nome \t\t\t\t Preco \t Estoque \t Estoque Minimo \t Quantidade Pedidos \t Quantidade Entradas");
 
     if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
         if (!feof(arquivo_produtos)){
@@ -147,7 +147,7 @@ int exibe_produtos() {
     }
 
     while(!feof(arquivo_produtos)){
-        printf("\n %d\t %s\t\t %.2f\t %d\t\t %d \t\t\t %d \t\t\t %d", produtos.codigo, produtos.nome, produtos.preco,
+        printf("\n %d\t %-30s\t %.2f\t %d\t\t %d \t\t\t %d \t\t\t %d", produtos.codigo, produtos.nome, produtos.preco,
                produtos.estoque, produtos.estoqueMinimo, produtos.pedidos_total, produtos.entradas_total);
 
         if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
@@ -393,7 +393,7 @@ int infos_entradas() {
     if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb")) == NULL){
         return ERRO_NA_ABERTURA_DE_ARQUIVO;
     }
-    printf("\n    ==== INFORMACOES ESTATISTICAS DE ENTRADAS ====\n");
+    printf("\n\n\n\t\t\t\t   ==== INFORMACOES ESTATISTICAS DE ENTRADAS ====\n");
 
     if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0) {
         if (!feof(arquivo_produtos)) {
@@ -407,7 +407,7 @@ int infos_entradas() {
         if (produtos.entradas_total == 0) {
             produtos.media_entradas = 0;
         } else {
-            produtos.media_entradas = (float)produtos.soma_pedido/(float)produtos.pedidos_total;
+            produtos.media_entradas = (float)produtos.soma_entrada/(float)produtos.entradas_total;
         }
 
         printf("\n\n\t\t\t\t\t--- INFORMACOES DO PRODUTO: %s ---", produtos.nome);
@@ -418,6 +418,7 @@ int infos_entradas() {
                produtos.menor_entrada,
                produtos.media_entradas,
                produtos.entrada_recusada);
+
         if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
             if (!feof(arquivo_produtos)){
                 fclose(arquivo_produtos);
@@ -426,21 +427,46 @@ int infos_entradas() {
         }
     }
 
-
     fclose(arquivo_produtos);
     return SUCESSO_OPERACAO;
 }
 
-void relatorio_vendas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho){
-    int i, j;
-    printf("    ==== RELATORIO GRAFICO DE VENDAS ====\n");
-    for (i=0; i<tamanho; i++) {
-        printf("\n%s -> ", produtos[i].nome);
-        for (j=0; j<pedidos[i].soma_pedido; j++) {
-            printf("|");
+int relatorio_vendas(){
+
+    FILE *arquivo_produtos;
+    tp_produto produtos;
+
+    int i;
+
+    if((arquivo_produtos = fopen(NOME_ARQUIVO_PRODUTOS, "rb")) == NULL){
+        return ERRO_NA_ABERTURA_DE_ARQUIVO;
+    }
+
+    printf("\n\n\n\t\t\t\t   ==== RELATORIO GRAFICO DE VENDAS ====\n");
+
+    if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0) {
+        if (!feof(arquivo_produtos)) {
+            fclose(arquivo_produtos);
+            return ERRO_NA_LEITURA_DE_ARQUIVO;
         }
     }
-    return;
+
+    while(!feof(arquivo_produtos)) {
+        printf("\n%-30s -> ", produtos.nome);
+        for (i=0; i<produtos.soma_pedido; i++) {
+            printf("|");
+        }
+
+        if (fread(&produtos, sizeof(tp_produto), 1, arquivo_produtos) == 0){
+            if (!feof(arquivo_produtos)){
+                fclose(arquivo_produtos);
+                return ERRO_NA_LEITURA_DE_ARQUIVO;
+            }
+        }
+    }
+
+    fclose(arquivo_produtos);
+    return SUCESSO_OPERACAO;
 }
 
 void ascii() {

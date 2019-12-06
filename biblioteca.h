@@ -77,6 +77,6 @@ int entrada();
 int exibe_produtos();
 int infos_pedidos();
 int infos_entradas();
-void relatorio_vendas(tp_movimentacao pedidos[], tp_produto produtos[], int espaco, int tamanho);
+int relatorio_vendas();
 void imprime_mensagem_erro_arquivo(int erro, char *nome_arquivo);
 int cria_arquivo_produtos();

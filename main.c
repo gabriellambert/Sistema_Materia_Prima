@@ -100,13 +100,25 @@ int main() {
 
         case 8: //Relatorio de vendas
             setColor(GREEN);
+            if ((status = relatorio_vendas()) != SUCESSO_OPERACAO) {
+                imprime_mensagem_erro_arquivo(status, NOME_ARQUIVO_PRODUTOS);
+            }
             //relatorio_vendas(pedidos, Produtos, quantidade_entradas, quantidade_produtos);
             resetColor();
             break;
 
         default:
             setColor(RED);
-            printf("Opcao invalida!");
+            if (opcao != 9) {
+                printf("Opcao invalida!");
+            } else {
+                printf("\nVV     VV  OOOOO  LL      TTTTTTT EEEEEEE     SSSSS  EEEEEEE MM    MM PPPPPP  RRRRRR  EEEEEEE\n"
+                        "VV     VV OO   OO LL        TTT   EE         SS      EE      MMM  MMM PP   PP RR   RR EE\n"
+                        " VV   VV  OO   OO LL        TTT   EEEEE       SSSSS  EEEEE   MM MM MM PPPPPP  RRRRRR  EEEEE\n"
+                        "  VV VV   OO   OO LL        TTT   EE              SS EE      MM    MM PP      RR  RR  EE\n"
+                        "   VVV     OOOO0  LLLLLLL   TTT   EEEEEEE     SSSSS  EEEEEEE MM    MM PP      RR   RR EEEEEEE\n");
+            }
+
             resetColor();
         }
     } while (opcao!=9);
