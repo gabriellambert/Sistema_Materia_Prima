@@ -2,11 +2,12 @@
 /* Sistema de gestão de produtos, com funcionalidades de cadastro; entrada; pedido; informações de produtos, pedidos e entradas e;
 relatorio gráfico de vendas.
 
-Curso: Ciência da COmputação - PUC-MG, Poços de Caldas
-Matérial: Algoritmos e estrutura de dados 01
+Curso: Ciência da Computação - PUC-MG, Poços de Caldas
+Matéria: Algoritmos e estrutura de dados 01
 
 
-Autores: Gabriel M. Lambert e Pedro Henrique Ronchini
+Autores: Gabriel M. Lambert - lmbrt.gbrl@gmail.com
+         Pedro Henrique Ronchini
 */
 
 #include <stdio.h>
